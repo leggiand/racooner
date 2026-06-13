@@ -1,6 +1,5 @@
 import os
 import platform
-from Lib.termcolor import colored
 
 print(r''' 
  ██▀███   ▄▄▄       ▄████▄   ▒█████   ▒█████   ███▄    █ ▓█████  ██▀███  
@@ -30,8 +29,8 @@ pathInfo=osCheck()
 linkList = ''''''
 def getPath():
     while True:
-        print(colored("enter the path where videos will be stored", "magenta"))
-        print(colored('>> ', "green"), end='', flush=True) 
+        print("enter the path where videos will be stored")
+        print('>> ') 
         path = input()
         path = path.replace("\"", "")
         path = path.replace("\'", "")  
@@ -39,11 +38,11 @@ def getPath():
         else:   print(colored("invalid dir","red"))
 def getFormat():
     while True:
-        print(colored("Which format Will be the Downloads", "yellow"))
+        print("Which format Will be the Downloads")
         print("[a] mp4")
-        print("[b] m4a")
+        print("[b] mp3")
         print("[c] webm")
-        print(colored('>> ', "green"), end='', flush=True)
+        print('>> ')
         format = input()
         if format == "a":
             format = "mp4"
@@ -55,23 +54,23 @@ def getFormat():
             format = "248"
             break
         else:
-            print(colored("choose a valid format","red"))
+            print("choose a valid format")
     return format
 def getLinkList():
     while True:
-        print(colored("how should we extract the url:", "cyan"))
+        print("how should we extract the url:")
         print("[a] text file")
         print("[b] command line")
-        print(colored('>> ', "green"), end='', flush=True)
+        print('>> ')
         linkingMethod = input()
         if linkingMethod == "a":    linkList=ExctractFromText()
         elif linkingMethod == "b":  linkList=TerminalForLink()    
-        else:   print(colored("please choose a valid option", "red"))
+        else:   print("please choose a valid option", "red")
         return linkList
 def ExctractFromText():
     while True:
         print("enter the path of the file")
-        print(colored('>> ', "white"), end='', flush=True)
+        print('>> ')
         filepath = input()
         filepath = filepath.replace("\"", "")
         filepath = filepath.replace("\'", "")
@@ -96,11 +95,16 @@ def addFromTerminalList(thisLinks):
     for eachLink in thisLinksList:
         if eachLink:        thisList += '\n'+eachLink
     return thisList
+def convert():
+    for file in os.listdir(destination):
+        if(file[-3:]=="m4a"):
+            os.system(f"ffmpeg -i \"{destination}\\{file}\" -acodec libmp3lame -ab 256k \"{destination}\\{file[0:-3]}mp3\"")
+            os.remove(destination+"\\"+file)
 def TerminalForLink():
     linkList=''
     print("enter the urls of the video you want,type \"remove\" for remove the last link, for enter them type \"enter\"")
     while True:
-        print(colored('\n >> ', "white"), end='', flush=True)
+        print('\n >> ')
         link = input()
         if link ==      "remove":linkList=removeFromTerminalList(linkList)     
         elif link ==    "enter":break    
@@ -120,9 +124,11 @@ for link in links:
     if link:
         command += (f"{pwd}{pathInfo[1]}{pathInfo[0]} -f {format} -i \"{link}\" -o \"{destination}{pathInfo[1]}%(title)s.%(ext)s\" ") + pathInfo[2]
 os.system(command)
+convert()
 while True:
     print('\nDone!!')
     input()
+    
 # todo [X] check bug in remove 
 # todo [X] check not finding ./yt-dlp_linux: not found
 # todo [X] check text file
